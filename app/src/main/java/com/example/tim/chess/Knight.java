@@ -31,7 +31,7 @@ public class Knight extends Piece{
 		if(x<0 || x>7 || y<0 || y>7)
 			return false;
 		boolean onPath = (Math.abs(this.x-x)==2 || Math.abs(this.y-y)==2) && (Math.abs(this.x-x)==1 || Math.abs(this.y-y)==1);
-		Piece target = Chess.board[y][x];
+		Piece target = MainActivity.board[y][x];
 		boolean notBlocked = target.isBlank() || target.color!=color;
 		return onPath && notBlocked;
 	}

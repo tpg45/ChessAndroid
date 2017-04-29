@@ -28,12 +28,12 @@ public class King extends Piece{
 	public boolean canMove(int x, int y){
 		if(x<0 || x>7 || y<0 || y>7)
 			return false;
-		if(Chess.board[y][x].toString().charAt(0)==color)
+		if(MainActivity.board[y][x].toString().charAt(0)==color)
 			return false;
 		boolean normalMove = (this.x!=x || this.y!=y) && (this.x-x<=1 && this.x-x>=-1) && (this.y-y<=1 && this.y-y>=-1);
 		if(normalMove){
 			char enemyColor = color=='w' ? 'b':'w';
-			boolean wouldCheck = Chess.threatened(x, y, enemyColor);
+			boolean wouldCheck = MainActivity.threatened(x, y, enemyColor);
 			return normalMove && !wouldCheck;
 		}
 		else{
@@ -44,24 +44,24 @@ public class King extends Piece{
 			//King's side castle
 			if(x>this.x){
 				for(int i = this.x+1; i<7; ){
-					if(!Chess.board[y][i].isBlank() || Chess.threatened(x, y, enemyColor)){
+					if(!MainActivity.board[y][i].isBlank() || MainActivity.threatened(x, y, enemyColor)){
 						notBlockedOrThreatened=false;
 						break;
 					}
 					i++;
 				}
-				if(!Chess.board[y][7].hasMoved)
+				if(!MainActivity.board[y][7].hasMoved)
 					rookNotMoved=true;
 			}
 			//Queen's side castle
 			else{
 				for(int i = 2; i<this.x-1; i++){
-					if(!Chess.board[y][i].isBlank() || Chess.threatened(x, y, enemyColor)){
+					if(!MainActivity.board[y][i].isBlank() || MainActivity.threatened(x, y, enemyColor)){
 						notBlockedOrThreatened=false;
 						break;
 					}
 				}
-				if(!Chess.board[y][0].hasMoved)
+				if(!MainActivity.board[y][0].hasMoved)
 					rookNotMoved=true;
 			}
 			return castle && rookNotMoved && notBlockedOrThreatened;
@@ -74,7 +74,7 @@ public class King extends Piece{
 	 */
 	public boolean isChecked(){
 		char enemyColor = color=='w' ? 'b':'w';
-		return Chess.threatened(x, y, enemyColor);
+		return MainActivity.threatened(x, y, enemyColor);
 	}
 	
 	/**
@@ -84,21 +84,21 @@ public class King extends Piece{
 	public boolean isCheckMated(){
 		char enemyColor = color=='w' ? 'b':'w';
 		//check for legal moves
-		if(x+1<=7 && !Chess.threatened(x+1, y, enemyColor))
+		if(x+1<=7 && !MainActivity.threatened(x+1, y, enemyColor))
 			return false;
-		else if(x+1<=7 && y+1<=7 && !Chess.threatened(x+1, y+1, enemyColor))
+		else if(x+1<=7 && y+1<=7 && !MainActivity.threatened(x+1, y+1, enemyColor))
 			return false;
-		else if(y+1<=7 && !Chess.threatened(x, y+1, enemyColor))
+		else if(y+1<=7 && !MainActivity.threatened(x, y+1, enemyColor))
 			return false;
-		else if(x-1>=0 && y+1<=7 && !Chess.threatened(x-1, y+1, enemyColor))
+		else if(x-1>=0 && y+1<=7 && !MainActivity.threatened(x-1, y+1, enemyColor))
 			return false;
-		else if(x-1>=0 && !Chess.threatened(x-1, y, enemyColor))
+		else if(x-1>=0 && !MainActivity.threatened(x-1, y, enemyColor))
 			return false;
-		else if(x-1>=0 && y-1>=0 && !Chess.threatened(x-1, y-1, enemyColor))
+		else if(x-1>=0 && y-1>=0 && !MainActivity.threatened(x-1, y-1, enemyColor))
 			return false;
-		else if(y-1>=0 && !Chess.threatened(x, y-1, enemyColor))
+		else if(y-1>=0 && !MainActivity.threatened(x, y-1, enemyColor))
 			return false;
-		else if(x+1<=7 && y-1>=0 && !Chess.threatened(x+1, y-1, enemyColor))
+		else if(x+1<=7 && y-1>=0 && !MainActivity.threatened(x+1, y-1, enemyColor))
 			return false;
 		//no legal moves and in check
 		return isChecked();

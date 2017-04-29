@@ -40,8 +40,8 @@ public class Pawn extends Piece{
 			return false;
 		if((color=='w' && y<this.y) || (color=='b' && y>this.y))
 			return false;
-		return Math.abs(this.x-x)==1 && Math.abs(this.y-y)==1 && Chess.board[this.y][x] instanceof Pawn &&
-			((Pawn)Chess.board[this.y][x]).lastMoveWasDouble && ((Pawn)Chess.board[this.y][x]).lastMovedTurn == Chess.turnCounter - 1;
+		return Math.abs(this.x-x)==1 && Math.abs(this.y-y)==1 && MainActivity.board[this.y][x] instanceof Pawn &&
+			((Pawn)MainActivity.board[this.y][x]).lastMoveWasDouble && ((Pawn)MainActivity.board[this.y][x]).lastMovedTurn == MainActivity.turnCounter - 1;
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class Pawn extends Piece{
 	 * @return whether a move to (x,y) would be a legal double forward move
 	 */
 	public boolean isLegalDoubleMove(int x, int y){
-		Piece target = Chess.board[y][x];
+		Piece target = MainActivity.board[y][x];
 		return this.x==x && !hasMoved && Math.abs(this.y-y)==2 && target.isBlank();
 	}
 	
@@ -68,7 +68,7 @@ public class Pawn extends Piece{
 			return false;
 		if((color=='w' && y<this.y) || (color=='b' && y>this.y))
 			return false;
-		Piece target = Chess.board[y][x];
+		Piece target = MainActivity.board[y][x];
 		boolean normalForward = this.x==x && Math.abs(this.y-y)==1 && target.isBlank();
 		boolean doubleForward = isLegalDoubleMove(x, y);
 		boolean simpleCapture = Math.abs(this.x-x)==1 && Math.abs(this.y-y)==1 && !target.isBlank() && target.color!=color;

@@ -1,7 +1,8 @@
 package com.example.tim.chess;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
