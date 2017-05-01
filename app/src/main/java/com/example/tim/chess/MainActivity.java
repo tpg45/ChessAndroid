@@ -27,6 +27,13 @@ public class MainActivity extends AppCompatActivity {
     boolean currentPlayer;  //true=white
     boolean drawRequested;
 
+    boolean targeting;
+
+    int sourceX;
+    int sourceY;
+    int targetX;
+    int targetY;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -462,6 +469,13 @@ public class MainActivity extends AppCompatActivity {
         currentPlayer = true;   //white
         drawRequested = false;
 
+        targeting=false;
+
+        sourceX=0;
+        sourceY=0;
+        targetX=0;
+        targetY=0;
+
         gridview = (GridView)findViewById(R.id.gridview);
 
         board[0][0] = new Rook(0,0,'w');
@@ -511,7 +525,31 @@ public class MainActivity extends AppCompatActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                //clicking pieces logic goes here
+                if(targeting){
+                    targetX=getX(position);
+                    targetY=getY(position);
+                    if(targetX==sourceX && targetY==sourceY){
+                        //unselect
+                    }
+                    else if(board[sourceY][sourceX].color != (currentPlayer?'w':'b')){
+                        //error
+                    }
+                    else if(board[sourceY][sourceX].canMove(targetX, targetY)){
+                        //move
+                        move(board[sourceY][sourceX], board[targetY][targetX]);
+                        currentPlayer=!currentPlayer;
+                        printBoard();
+                    }
+                    else{
+                        //error
+                    }
+                    targeting=false;
+                }
+                else{
+                    sourceX=getX(position);
+                    sourceY=getY(position);
+                    targeting=true;
+                }
             }
         });
     }
@@ -570,6 +608,10 @@ public class MainActivity extends AppCompatActivity {
 
     public int getY(int pos){
         return 7-(pos/8);
+    }
+
+    public int getPos(int x, int y){
+        return x+(8*y);
     }
 
     /**
