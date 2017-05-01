@@ -567,6 +567,14 @@ public class MainActivity extends AppCompatActivity {
                         move(board[sourceY][sourceX], board[targetY][targetX]);
                         currentPlayer=!currentPlayer;
                         printBoard();
+                        check = isCheck(!currentPlayer);
+                        checkmate = isCheckmate(!currentPlayer);
+                        stalemate = isStalemate(!currentPlayer);
+                        if(checkmate || stalemate){
+                            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                                public void onItemClick(AdapterView<?> parent, View v, int position, long id){}
+                            });
+                        }
                     }
                     else{
                         //error
