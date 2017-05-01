@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static GridView gridview;
     public static Piece[][] board = new Piece[8][8];
+    public static Piece[][] undoBoard = new Piece[8][8];
+
     public static int turnCounter = 0;
     public static String input;
 
@@ -61,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void resign(View v){
-
+        //update text field
+        initBoard();
     }
 
     public void replay(View v){
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if(test.color==color && test.canMove(x, y)){
                     if(test instanceof Pawn){
-                        if(((Pawn) test).isLegalDoubleMove(x, y)){
+                        if(((Pawn) test).x == x){
                             continue;
                         }
                     }
