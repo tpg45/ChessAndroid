@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,6 +13,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        main();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
 
     /**
      *
@@ -490,9 +499,8 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * Creates and displays an ASCII game of chess
-         * @param args - command line arguments
          */
-        public static void main(String[] args) {
+        public static void main() {
             initBoard();
 
             boolean check = false;
@@ -501,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
             boolean currentPlayer = true;		//true=white
             boolean drawRequested = false;
 
-            Scanner scanner = new Scanner(System.in);
+        /*    Scanner scanner = new Scanner(System.in);
 
             while(true){
                 printBoard();
@@ -538,6 +546,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
+
                 move(board[input.charAt(1)-49][input.charAt(0)-97], board[input.charAt(4)-49][input.charAt(3)-97]);
 
                 check = isCheck(currentPlayer);
@@ -559,6 +568,7 @@ public class MainActivity extends AppCompatActivity {
                 currentPlayer = !currentPlayer;
             }
             scanner.close();
+        */
         }
     }
 
