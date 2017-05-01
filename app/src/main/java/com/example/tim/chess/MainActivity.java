@@ -564,6 +564,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public int getX(int pos){
+        return pos%8;
+    }
+
+    public int getY(int pos){
+        return 7-(pos/8);
+    }
+
     /**
      * Creates and displays an ASCII game of chess
      */
