@@ -1,5 +1,6 @@
 package com.example.tim.chess;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -528,6 +529,10 @@ public class MainActivity extends AppCompatActivity {
                 if(targeting){
                     targetX=getX(position);
                     targetY=getY(position);
+
+                    ImageView img = (ImageView)gridview.getChildAt(getPos(sourceX, sourceY));
+                    img.setColorFilter(null);
+
                     if(targetX==sourceX && targetY==sourceY){
                         //unselect
                     }
@@ -548,7 +553,11 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     sourceX=getX(position);
                     sourceY=getY(position);
-                    targeting=true;
+                    if(!board[sourceY][sourceX].isBlank()){
+                        ImageView img = (ImageView)gridview.getChildAt(getPos(sourceX, sourceY));
+                        img.setColorFilter(Color.argb(100,0,255,125));
+                        targeting=true;
+                    }
                 }
             }
         });
@@ -611,7 +620,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public int getPos(int x, int y){
-        return x+(8*y);
+        return 56+x-(8*y);
     }
 
     /**
