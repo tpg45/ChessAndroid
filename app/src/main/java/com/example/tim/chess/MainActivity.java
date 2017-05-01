@@ -2,6 +2,7 @@ package com.example.tim.chess;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
+    }
+
+    public void draw(View v){
+        
+    }
+
+    public void AI(View v){
+
+    }
+
+    public void resign(View v){
+
+    }
+
+    public void replay(View v){
+
+    }
+
+    public void undo(View v){
+
     }
 
     /**
