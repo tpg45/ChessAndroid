@@ -553,7 +553,7 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     sourceX=getX(position);
                     sourceY=getY(position);
-                    if(!board[sourceY][sourceX].isBlank()){
+                    if(!board[sourceY][sourceX].isBlank() && board[sourceY][sourceX].color==(currentPlayer?'w':'b')){
                         ImageView img = (ImageView)gridview.getChildAt(getPos(sourceX, sourceY));
                         img.setColorFilter(Color.argb(100,0,255,125));
                         targeting=true;
