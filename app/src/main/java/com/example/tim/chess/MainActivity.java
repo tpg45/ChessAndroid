@@ -2,6 +2,7 @@ package com.example.tim.chess;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -564,19 +565,29 @@ public class MainActivity extends AppCompatActivity {
                         //error
                     }
                     else if(board[sourceY][sourceX].canMove(targetX, targetY)){
+                        Piece[][] temp = copyBoard();
+
                         //move
                         move(board[sourceY][sourceX], board[targetY][targetX]);
                         Integer[] arr = {sourceY,sourceX,targetX,targetY};
                         replay.add(arr);
-                        currentPlayer=!currentPlayer;
-                        printBoard();
-                        check = isCheck(!currentPlayer);
-                        checkmate = isCheckmate(!currentPlayer);
-                        stalemate = isStalemate(!currentPlayer);
-                        if(checkmate || stalemate){
-                            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                                public void onItemClick(AdapterView<?> parent, View v, int position, long id){}
-                            });
+                        if(isCheck(!currentPlayer)){
+                            board=temp;
+                            turnCounter--;
+                            printBoard();
+                        }
+                        else{
+                            printBoard();
+                            check = isCheck(currentPlayer);
+                            checkmate = isCheckmate(currentPlayer);
+                            stalemate = isStalemate(currentPlayer);
+                            currentPlayer = !currentPlayer;
+                            if (checkmate || stalemate) {
+                                gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                                    }
+                                });
+                            }
                         }
                     }
                     else{
@@ -595,6 +606,37 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public Piece[][] copyBoard(){
+        Piece[][] temp = new Piece[8][8];
+        for(int i=0; i<8; i++){
+            for(int j=0; j<8; j++){
+                Piece old = board[i][j];
+                if(old instanceof Bishop){
+                    temp[i][j] = new Bishop(old.x, old.y, old.color);
+                }
+                else if(old instanceof King){
+                    temp[i][j] = new King(old.x, old.y, old.color);
+                }
+                else if(old instanceof Knight){
+                    temp[i][j] = new Knight(old.x, old.y, old.color);
+                }
+                else if(old instanceof Pawn){
+                    temp[i][j] = new Pawn(old.x, old.y, old.color);
+                }
+                else if(old instanceof Queen){
+                    temp[i][j] = new Queen(old.x, old.y, old.color);
+                }
+                else if(old instanceof Rook){
+                    temp[i][j] = new Rook(old.x, old.y, old.color);
+                }
+                else{
+                    temp[i][j] = new Piece(old.x, old.y, old.color);
+                }
+            }
+        }
+        return temp;
     }
 
     public static int getImg(String str){
