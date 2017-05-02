@@ -228,7 +228,9 @@ public class MainActivity extends AppCompatActivity {
             fos = new FileOutputStream(f);
             ObjectOutputStream oos= new ObjectOutputStream(fos);
             oos.writeObject(board);
+            oos.flush();
             oos.close();
+            fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -252,7 +254,9 @@ public class MainActivity extends AppCompatActivity {
                     FileOutputStream fos= new FileOutputStream(f);
                     ObjectOutputStream oos= new ObjectOutputStream(fos);
                     oos.writeObject(replay);
+                    oos.flush();
                     oos.close();
+                    fos.flush();
                     fos.close();
                 }catch(IOException ioe){
                     ioe.printStackTrace();
@@ -281,12 +285,15 @@ public class MainActivity extends AppCompatActivity {
                 switch(choice){
                     case "queen":{
                         board[pY][pX] = new Queen(pY, pX, color, true);
+                        break;
                     }
                     case "knight":{
                         board[pY][pX] = new Knight(pY, pX, color, true);
+                        break;
                     }
                     case "rook":{
                         board[pY][pX] = new Rook(pY, pX, color, true);
+                        break;
                     }
                     case "bishop":{
                         board[pY][pX] = new Bishop(pY, pX, color, true);
