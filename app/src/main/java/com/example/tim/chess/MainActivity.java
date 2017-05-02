@@ -1,5 +1,6 @@
 package com.example.tim.chess;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -43,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     int sourceY;
     int targetX;
     int targetY;
+
+    int pX;
+    int pY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         Integer[] choice = legalMoves.get((int)(Math.random()*legalMoves.size()));
         undoBoard = copyBoard(board);
         move(board[choice[1]][choice[0]], board[choice[3]][choice[2]]);
+        replay.add(choice);
+        drawRequested=false;
 
         printBoard();
         check = isCheck(currentPlayer);
@@ -116,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 }
             });
+            endGame();
         }
     }
 
@@ -158,18 +166,90 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void endGame(){
-        {
-            try{
-                FileOutputStream fos= new FileOutputStream(repName);
-                ObjectOutputStream oos= new ObjectOutputStream(fos);
-                oos.writeObject(replay);
-                oos.close();
-                fos.close();
-            }catch(IOException ioe){
-                ioe.printStackTrace();
+        Intent intent = new Intent(this, SaveReplayActivity.class);
+        startActivityForResult(intent, 1);
+        initBoard();
+    }
+
+    /**
+     * Promotes a pawn to the chosen piece based on input.
+     * <p>
+     * Defaults to queen if unspecified.
+     * @param p the piece to be promoted
+     */
+    public void promote(Piece p){
+        pX = p.x;
+        pY = p.y;
+
+        FileOutputStream fos= null;
+        try {
+            fos = new FileOutputStream("tempboard");
+            ObjectOutputStream oos= new ObjectOutputStream(fos);
+            oos.writeObject(board);
+            oos.close();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        Intent intent = new Intent(this, PromoteActivity.class);
+        intent.putExtra("color", p.color+"");
+        startActivityForResult(intent, 2);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==1) {
+            if(resultCode==RESULT_OK) {
+                repName = data.getStringExtra("repname");
+                try{
+                    FileOutputStream fos= new FileOutputStream(repName);
+                    ObjectOutputStream oos= new ObjectOutputStream(fos);
+                    oos.writeObject(replay);
+                    oos.close();
+                    fos.close();
+                }catch(IOException ioe){
+                    ioe.printStackTrace();
+                }
             }
         }
-        initBoard();
+        else if(requestCode==2){
+            if(resultCode==RESULT_OK){
+                try {
+                    FileInputStream fis = new FileInputStream("tempboard");
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    board = (Piece[][])ois.readObject();
+                    ois.close();
+                    fis.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                String choice = data.getStringExtra("choice");
+                char color = (pY==7)?'w':'b';
+                switch(choice){
+                    case "queen":{
+                        board[pY][pX] = new Queen(pY, pX, color, true);
+                    }
+                    case "knight":{
+                        board[pY][pX] = new Knight(pY, pX, color, true);
+                    }
+                    case "rook":{
+                        board[pY][pX] = new Rook(pY, pX, color, true);
+                    }
+                    case "bishop":{
+                        board[pY][pX] = new Bishop(pY, pX, color, true);
+                    }
+                }
+            }
+        }
     }
 
 
@@ -217,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
      * @param color - color of the opposing pieces that can threaten the space.
      * @return true if space is being threatened, false if not.
      */
-    public static boolean threatenedByNonKings(int x, int y, char color){
+    public boolean threatenedByNonKings(int x, int y, char color){
         for(int i = 0; i<=7; i++){
             for (int j = 0; j<=7; j++){
                 Piece test = board[i][j];
@@ -250,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
      * @param player - the player who moved the piece in question
      * @return whether the player has put the opponent in checkmate
      */
-    public static boolean isCheckmate(boolean player){
+    public boolean isCheckmate(boolean player){
         if(!isCheck(player))
             return false;
         //king cannot move
@@ -487,7 +567,7 @@ public class MainActivity extends AppCompatActivity {
      * @param player - the current player
      * @return whether the given player is in stalemate
      */
-    public static boolean isStalemate(boolean player){
+    public boolean isStalemate(boolean player){
         char color = player? 'b':'w';
         for (Piece[] row : board){
             for (Piece p : row){
@@ -519,7 +599,7 @@ public class MainActivity extends AppCompatActivity {
      * @param p1 - Piece to be moved.
      * @param p2 - Piece being moved to.
      */
-    public static void move(Piece p1, Piece p2){
+    public void move(Piece p1, Piece p2){
         if(p1 instanceof Pawn){
             boolean isEnPassant = ((Pawn) p1).isLegalEnPassant(p2.x, p2.y);
             int oldY = p1.y;
@@ -559,32 +639,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Promotes a pawn to the chosen piece based on input.
-     * <p>
-     * Defaults to queen if unspecified.
-     * @param p the piece to be promoted
-     */
-    public static void promote(Piece p){
-        //ask via toast
-
-        /*char choice;
-        if(input.length() == 7){
-            choice = input.charAt(6);
-            if(choice == 'N')
-                board[p.y][p.x] = new Knight(p.x, p.y, p.color);
-            if(choice == 'R')
-                board[p.y][p.x] = new Rook(p.x, p.y, p.color);
-            if(choice == 'B')
-                board[p.y][p.x] = new Bishop(p.x, p.y, p.color);
-            if(choice == 'Q')
-                board[p.y][p.x] = new Queen(p.x, p.y, p.color);
-        }
-        else{
-            board[p.y][p.x] = new Queen(p.x, p.y, p.color);
-        }*/
-    }
-
-    /**
      * Initializes the board state to the start of a new game.
      */
     public void initBoard(){
@@ -602,6 +656,9 @@ public class MainActivity extends AppCompatActivity {
         sourceY=0;
         targetX=0;
         targetY=0;
+
+        pX=0;
+        pY=0;
 
         gridview = (GridView)findViewById(R.id.gridview);
 
@@ -671,8 +728,6 @@ public class MainActivity extends AppCompatActivity {
                         //move
                         undoBoard = copyBoard(board);
                         move(board[sourceY][sourceX], board[targetY][targetX]);
-                        Integer[] arr = {sourceY,sourceX,targetX,targetY};
-                        replay.add(arr);
 
                         if(isCheck(!currentPlayer)){
                             board=temp;
@@ -680,16 +735,20 @@ public class MainActivity extends AppCompatActivity {
                             printBoard();
                         }
                         else{
+                            Integer[] arr = {sourceY,sourceX,targetX,targetY};
+                            replay.add(arr);
                             printBoard();
                             check = isCheck(currentPlayer);
                             checkmate = isCheckmate(currentPlayer);
                             stalemate = isStalemate(currentPlayer);
                             currentPlayer = !currentPlayer;
+                            drawRequested=false;
                             if (checkmate || stalemate) {
                                 gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                                     }
                                 });
+                                endGame();
                             }
                         }
                     }

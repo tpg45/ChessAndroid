@@ -31,9 +31,10 @@ public class King extends Piece{
 		if(MainActivity.board[y][x].toString().charAt(0)==color)
 			return false;
 		Piece[][] temp = MainActivity.copyBoard(MainActivity.board);
-		MainActivity.move(MainActivity.board[this.y][this.x], MainActivity.board[y][x]);
+		MainActivity.board[y][x] = new King(x, y, this.color, true);
+		char c = (this.x%2==this.y%2)?'b':'w';
+		MainActivity.board[this.y][this.x] = new Piece(this.x, this.y, c, false);
 		boolean wouldCheck = MainActivity.isCheck(color!='w');
-		MainActivity.turnCounter--;
 		MainActivity.board = temp;
 		if(wouldCheck)
 			return false;
