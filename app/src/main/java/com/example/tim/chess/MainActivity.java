@@ -157,24 +157,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void replay(View v){
-        //select replay
-
-
-
-        try
-        {
-            FileInputStream fis = new FileInputStream(repName);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            replay = (ArrayList) ois.readObject();
-            ois.close();
-            fis.close();
-        }catch(IOException ioe){
-            ioe.printStackTrace();
-            return;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
+        Intent intent = new Intent(this, PickReplayActivity.class);
+        startActivityForResult(intent, 3);
     }
 
     public void draw(View v){
