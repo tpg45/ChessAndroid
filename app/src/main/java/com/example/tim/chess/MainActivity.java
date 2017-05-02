@@ -57,7 +57,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void draw(View v){
-        
+        if (drawRequested){
+            endGame();
+            return;
+        }
+        drawRequested = !drawRequested;
+
     }
 
     public void AI(View v){
@@ -110,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void resign(View v){
         //update text field
-        initBoard();
+        endGame();
     }
 
     public void replay(View v){
@@ -118,6 +123,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void undo(View v){
+        if(turnCounter == 0){
+            return;
+        }
         if(board != undoBoard) {
             turnCounter--;
             currentPlayer = !currentPlayer;
@@ -125,6 +133,12 @@ public class MainActivity extends AppCompatActivity {
             printBoard();
         }
     }
+
+    public void endGame(){
+        //serialize arraylist for replay if they save it
+        initBoard();
+    }
+
 
     /**
      * Checks to see if a space is being threatened by an opposing piece.
