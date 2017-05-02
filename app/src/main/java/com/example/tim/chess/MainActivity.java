@@ -1,5 +1,6 @@
 package com.example.tim.chess;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
@@ -60,7 +62,50 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void AI(View v){
+        if(checkmate || stalemate)
+            return;
 
+        char color = currentPlayer?'w':'b';
+        ArrayList<Piece> pieces = new ArrayList<Piece>();
+        ArrayList<Integer[]> legalMoves = new ArrayList<Integer[]>();
+        for(int i=0; i<8; i++){
+            for(int j=0; j<8; j++){
+                if(board[i][j].color==color)
+                    pieces.add(board[i][j]);
+            }
+        }
+
+        for(Piece p: pieces){
+            for(int i=0; i<8; i++){
+                for(int j=0; j<8; j++){
+                    if(p.canMove(i, j)){
+                        Piece[][] tempBoard = copyBoard(board);
+                        move(p, board[j][i]);
+                        if(!isCheck(!currentPlayer)){
+                            Integer[] temp = {p.x, p.y, i, j};
+                            legalMoves.add(temp);
+                        }
+                        turnCounter--;
+                        board = tempBoard;
+                    }
+                }
+            }
+        }
+
+        Integer[] choice = legalMoves.get((int)(Math.random()*legalMoves.size()));
+        move(board[choice[1]][choice[0]], board[choice[3]][choice[2]]);
+
+        printBoard();
+        check = isCheck(currentPlayer);
+        checkmate = isCheckmate(currentPlayer);
+        stalemate = isStalemate(currentPlayer);
+        currentPlayer = !currentPlayer;
+        if (checkmate || stalemate) {
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                }
+            });
+        }
     }
 
     public void resign(View v){
@@ -467,7 +512,9 @@ public class MainActivity extends AppCompatActivity {
      * @param p the piece to be promoted
      */
     public static void promote(Piece p){
-        char choice;
+        //ask via toast
+
+        /*char choice;
         if(input.length() == 7){
             choice = input.charAt(6);
             if(choice == 'N')
@@ -481,7 +528,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             board[p.y][p.x] = new Queen(p.x, p.y, p.color);
-        }
+        }*/
     }
 
     /**
@@ -564,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
                         //error
                     }
                     else if(board[sourceY][sourceX].canMove(targetX, targetY)){
-                        Piece[][] temp = copyBoard();
+                        Piece[][] temp = copyBoard(board);
 
                         //move
                         move(board[sourceY][sourceX], board[targetY][targetX]);
@@ -606,11 +653,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public Piece[][] copyBoard(){
+    public static Piece[][] copyBoard(Piece[][] b){
         Piece[][] temp = new Piece[8][8];
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
-                Piece old = board[i][j];
+                Piece old = b[i][j];
                 if(old instanceof Bishop){
                     temp[i][j] = new Bishop(old.x, old.y, old.color);
                 }
@@ -696,71 +743,5 @@ public class MainActivity extends AppCompatActivity {
     public int getPos(int x, int y){
         return 56+x-(8*y);
     }
-
-    /**
-     * Creates and displays an ASCII game of chess
-     */
-    /*public void main() {
-
-        Scanner scanner = new Scanner(System.in);
-
-        while(true){
-            printBoard();
-
-            if(check)
-                System.out.println("Check");
-            if(currentPlayer)
-                System.out.print("White's move: ");
-            else
-                System.out.print("Black's move: ");
-
-            while(true){
-                input = scanner.nextLine();
-                if(input.equals("resign")){
-                    System.out.println((currentPlayer==false? "White":"Black") + " wins");
-                    return;
-                }
-                if(drawRequested && input.equals("draw")){
-                    System.out.println("Draw");
-                    return;
-                }
-                drawRequested=false;
-                if(input.contains("draw?"))
-                    drawRequested = true;
-                if(isLegal(currentPlayer))
-                    break;
-                else{
-                    System.out.println("Illegal move, try again");
-                    if(currentPlayer)
-                        System.out.print("White's move: ");
-                    else
-                        System.out.print("Black's move: ");
-                }
-
-            }
-
-
-            move(board[input.charAt(1)-49][input.charAt(0)-97], board[input.charAt(4)-49][input.charAt(3)-97]);
-
-            check = isCheck(currentPlayer);
-            checkmate = isCheckmate(currentPlayer);
-            stalemate = isStalemate(currentPlayer);
-            if(checkmate){
-                System.out.println("Checkmate");
-                String winner = currentPlayer ? "White":"Black";
-                System.out.println(winner+" wins");
-                break;
-            }
-            else if(stalemate){
-                System.out.println("Stalemate");
-                System.out.println("Draw");
-                break;
-            }
-            System.out.println('\n');
-
-            currentPlayer = !currentPlayer;
-        }
-        scanner.close();
-    }*/
 }
 

@@ -30,11 +30,17 @@ public class King extends Piece{
 			return false;
 		if(MainActivity.board[y][x].toString().charAt(0)==color)
 			return false;
+		Piece[][] temp = MainActivity.copyBoard(MainActivity.board);
+		MainActivity.move(MainActivity.board[this.y][this.x], MainActivity.board[y][x]);
+		boolean wouldCheck = MainActivity.isCheck(color!='w');
+		MainActivity.turnCounter--;
+		MainActivity.board = temp;
+		if(wouldCheck)
+			return false;
+
 		boolean normalMove = (this.x!=x || this.y!=y) && (this.x-x<=1 && this.x-x>=-1) && (this.y-y<=1 && this.y-y>=-1);
 		if(normalMove){
-			char enemyColor = color=='w' ? 'b':'w';
-			boolean wouldCheck = MainActivity.threatened(x, y, enemyColor);
-			return normalMove && !wouldCheck;
+			return true;
 		}
 		else{
 			boolean castle = !hasMoved && (this.y==0 || this.y==7) && this.y==y && Math.abs(this.x-x)==2;
