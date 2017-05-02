@@ -13,8 +13,8 @@ public class Knight extends Piece{
 	 * @param y - row number
 	 * @param color - white or black
 	 */
-	public Knight(int x, int y, char color) {
-		super(x, y, color);
+	public Knight(int x, int y, char color, boolean hasMoved) {
+		super(x, y, color, hasMoved);
 	}
 	
 	/**

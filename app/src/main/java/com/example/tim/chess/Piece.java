@@ -29,11 +29,11 @@ public class Piece{
 	 * @param y - row number
 	 * @param color - white or black
 	 */
-	public Piece(int x, int y, char color){
+	public Piece(int x, int y, char color, boolean hasMoved){
 		this.x=x;
 		this.y=y;
 		this.color=color;
-		hasMoved=false;
+		this.hasMoved=hasMoved;
 	}
 	
 	/**

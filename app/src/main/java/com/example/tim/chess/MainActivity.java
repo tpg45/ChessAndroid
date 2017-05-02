@@ -227,28 +227,21 @@ public class MainActivity extends AppCompatActivity {
                 else if(test instanceof King){
                     continue;
                 }
-                else if(test.color==color && test.canMove(x, y))
+                else if(test.color==color && test.canMove(x, y)){
+                    Piece[][] temp = copyBoard(board);
+                    move(test, board[y][x]);
+                    boolean b = color!='w';
+                    if(isCheck(b)){
+                        board = temp;
+                        turnCounter--;
+                        return false;
+                    }
+                    board=temp;
+                    turnCounter--;
                     return true;
+                }
             }
         }
-        return false;
-    }
-
-    /**
-     * Checks to see if the input move is legal.
-     * <p>
-     * Calls canMove on the Piece object located at the position indicated.
-     * @param player - current player
-     * @return if move is legal, returns true.
-     */
-    public static boolean isLegal(boolean player){
-        if(input.equals("draw"))
-            return false;
-        Piece cur = board[input.charAt(1)-49][input.charAt(0)-97];
-        if((player && cur.color == 'b') || (!player && cur.color == 'w'))
-            return false;
-        if(cur.canMove(input.charAt(3)-97 , input.charAt(4)-49))
-            return true;
         return false;
     }
 
@@ -263,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
         //king cannot move
         char enemyColor = player ? 'w':'b';
         char color = player ? 'b':'w' ;
-        Piece k = new Piece(0, 0, 'w');	//temporary value
+        Piece k = new Piece(0, 0, 'w', false);	//temporary value
         boolean b = false;
         for (Piece[] row : board){
             for (Piece p : row){
@@ -503,8 +496,17 @@ public class MainActivity extends AppCompatActivity {
                 for(int i=0; i<7; i++){
                     for(int j=0; j<7; j++){
                         Piece test = board[i][j];
-                        if(p.canMove(test.x, test.y))
-                            return false;
+                        if(p.canMove(test.x, test.y)){
+                            Piece[][] temp = copyBoard(board);
+                            move(p, test);
+                            if(!isCheck(p.color!='w')){
+                                board=temp;
+                                turnCounter--;
+                                return false;
+                            }
+                            board=temp;
+                            turnCounter--;
+                        }
                     }
                 }
             }
@@ -521,24 +523,24 @@ public class MainActivity extends AppCompatActivity {
         if(p1 instanceof Pawn){
             boolean isEnPassant = ((Pawn) p1).isLegalEnPassant(p2.x, p2.y);
             int oldY = p1.y;
-            board[p2.y][p2.x] = new Pawn(p2.x, p2.y, p1.color);
+            board[p2.y][p2.x] = new Pawn(p2.x, p2.y, p1.color, true);
             ((Pawn)board[p2.y][p2.x]).lastMovedTurn = turnCounter;
             ((Pawn)board[p2.y][p2.x]).lastMoveWasDouble = Math.abs(p1.y-p2.y)==2 && p1.x==p2.x;
             if(isEnPassant){
                 char color = oldY%2 == p2.x%2 ? 'b':'w';
-                board[oldY][p2.x] = new Piece(oldY, p2.x, color);
+                board[oldY][p2.x] = new Piece(oldY, p2.x, color, false);
             }
             if ((p1.color == 'w' && p2.y == 7) || (p1.color == 'b' && p2.y == 0))
                 promote(board[p2.y][p2.x]);
         }
         else if(p1 instanceof Rook)
-            board[p2.y][p2.x] = new Rook(p2.x, p2.y, p1.color);
+            board[p2.y][p2.x] = new Rook(p2.x, p2.y, p1.color, true);
         else if(p1 instanceof Knight)
-            board[p2.y][p2.x] = new Knight(p2.x, p2.y, p1.color);
+            board[p2.y][p2.x] = new Knight(p2.x, p2.y, p1.color, true);
         else if(p1 instanceof Bishop)
-            board[p2.y][p2.x] = new Bishop(p2.x, p2.y, p1.color);
+            board[p2.y][p2.x] = new Bishop(p2.x, p2.y, p1.color, true);
         else if(p1 instanceof Queen)
-            board[p2.y][p2.x] = new Queen(p2.x, p2.y, p1.color);
+            board[p2.y][p2.x] = new Queen(p2.x, p2.y, p1.color, true);
         else if(p1 instanceof King){
             boolean castle = (p1.y==0 || p1.y==7) && p1.y==p2.y && Math.abs(p1.x-p2.x)==2;
             if(castle){
@@ -550,10 +552,9 @@ public class MainActivity extends AppCompatActivity {
                     move(board[p1.y][7], board[p1.y][p1.x+1]);
                 }
             }
-            board[p2.y][p2.x] = new King(p2.x, p2.y, p1.color);
+            board[p2.y][p2.x] = new King(p2.x, p2.y, p1.color, true);
         }
-        board[p2.y][p2.x].hasMoved=true;
-        board[p1.y][p1.x] = (p1.x)%2==(p1.y)%2? new Piece(p1.x,p1.y,'b'):new Piece(p1.x,p1.y,'w');
+        board[p1.y][p1.x] = (p1.x)%2==(p1.y)%2? new Piece(p1.x,p1.y,'b', false):new Piece(p1.x,p1.y,'w', false);
         turnCounter++;
     }
 
@@ -604,40 +605,40 @@ public class MainActivity extends AppCompatActivity {
 
         gridview = (GridView)findViewById(R.id.gridview);
 
-        board[0][0] = new Rook(0,0,'w');
-        board[0][1] = new Knight(1,0,'w');
-        board[0][2] = new Bishop(2,0,'w');
-        board[0][3] = new Queen(3,0,'w');
-        board[0][4] = new King(4,0,'w');
-        board[0][5] = new Bishop(5,0,'w');
-        board[0][6] = new Knight(6,0,'w');
-        board[0][7] = new Rook(7,0,'w');
+        board[0][0] = new Rook(0,0,'w', false);
+        board[0][1] = new Knight(1,0,'w', false);
+        board[0][2] = new Bishop(2,0,'w', false);
+        board[0][3] = new Queen(3,0,'w', false);
+        board[0][4] = new King(4,0,'w', false);
+        board[0][5] = new Bishop(5,0,'w', false);
+        board[0][6] = new Knight(6,0,'w', false);
+        board[0][7] = new Rook(7,0,'w', false);
 
         for(int i = 0;i<=7;i++){
-            board[1][i] = new Pawn(i,1,'w');
+            board[1][i] = new Pawn(i,1,'w', false);
         }
 
         for(int i = 0;i<=7;i++){
             for(int j = 2;j<=5;j++){
                 if(i%2==j%2)
-                    board[j][i] = new Piece(i,j,'b');
+                    board[j][i] = new Piece(i,j,'b', false);
                 else
-                    board[j][i] = new Piece(i,j,'w');
+                    board[j][i] = new Piece(i,j,'w', false);
             }
         }
 
         for(int i = 0;i<=7;i++){
-            board[6][i] = new Pawn(i,6,'b');
+            board[6][i] = new Pawn(i,6,'b', false);
         }
 
-        board[7][0] = new Rook(0,7,'b');
-        board[7][1] = new Knight(1,7,'b');
-        board[7][2] = new Bishop(2,7,'b');
-        board[7][3] = new Queen(3,7,'b');
-        board[7][4] = new King(4,7,'b');
-        board[7][5] = new Bishop(5,7,'b');
-        board[7][6] = new Knight(6,7,'b');
-        board[7][7] = new Rook(7,7,'b');
+        board[7][0] = new Rook(0,7,'b', false);
+        board[7][1] = new Knight(1,7,'b', false);
+        board[7][2] = new Bishop(2,7,'b', false);
+        board[7][3] = new Queen(3,7,'b', false);
+        board[7][4] = new King(4,7,'b', false);
+        board[7][5] = new Bishop(5,7,'b', false);
+        board[7][6] = new Knight(6,7,'b', false);
+        board[7][7] = new Rook(7,7,'b', false);
 
         printBoard();
     }
@@ -716,25 +717,25 @@ public class MainActivity extends AppCompatActivity {
             for(int j=0; j<8; j++){
                 Piece old = b[i][j];
                 if(old instanceof Bishop){
-                    temp[i][j] = new Bishop(old.x, old.y, old.color);
+                    temp[i][j] = new Bishop(old.x, old.y, old.color, old.hasMoved);
                 }
                 else if(old instanceof King){
-                    temp[i][j] = new King(old.x, old.y, old.color);
+                    temp[i][j] = new King(old.x, old.y, old.color, old.hasMoved);
                 }
                 else if(old instanceof Knight){
-                    temp[i][j] = new Knight(old.x, old.y, old.color);
+                    temp[i][j] = new Knight(old.x, old.y, old.color, old.hasMoved);
                 }
                 else if(old instanceof Pawn){
-                    temp[i][j] = new Pawn(old.x, old.y, old.color);
+                    temp[i][j] = new Pawn(old.x, old.y, old.color, old.hasMoved);
                 }
                 else if(old instanceof Queen){
-                    temp[i][j] = new Queen(old.x, old.y, old.color);
+                    temp[i][j] = new Queen(old.x, old.y, old.color, old.hasMoved);
                 }
                 else if(old instanceof Rook){
-                    temp[i][j] = new Rook(old.x, old.y, old.color);
+                    temp[i][j] = new Rook(old.x, old.y, old.color, old.hasMoved);
                 }
                 else{
-                    temp[i][j] = new Piece(old.x, old.y, old.color);
+                    temp[i][j] = new Piece(old.x, old.y, old.color, old.hasMoved);
                 }
             }
         }
