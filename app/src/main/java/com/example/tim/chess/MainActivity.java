@@ -219,7 +219,9 @@ public class MainActivity extends AppCompatActivity {
             fos = new FileOutputStream(f);
             ObjectOutputStream oos= new ObjectOutputStream(fos);
             oos.writeObject(board);
+            oos.flush();
             oos.close();
+            fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -243,7 +245,9 @@ public class MainActivity extends AppCompatActivity {
                     FileOutputStream fos= new FileOutputStream(f);
                     ObjectOutputStream oos= new ObjectOutputStream(fos);
                     oos.writeObject(replay);
+                    oos.flush();
                     oos.close();
+                    fos.flush();
                     fos.close();
                 }catch(IOException ioe){
                     ioe.printStackTrace();
