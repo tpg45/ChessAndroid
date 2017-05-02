@@ -257,6 +257,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 printBoard();
             }
+            else{
+                char color = (pY==7)?'w':'b';
+                board[pY][pX] = new Queen(pX, pY, color, true);
+                pChoice='q';
+            }
             Character[] a = replay.get(replay.size()-1);
             replay.remove(replay.size()-1);
             Character [] a2 = {a[0],a[1],a[2],a[3],pChoice};
