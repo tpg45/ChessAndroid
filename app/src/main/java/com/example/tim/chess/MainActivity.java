@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         Bundle b = getIntent().getBundleExtra("b");
         if(b!=null){
@@ -96,15 +96,6 @@ public class MainActivity extends AppCompatActivity {
             }
             printBoard();
         }
-    }
-
-    public void draw(View v){
-        if (drawRequested){
-            endGame();
-            return;
-        }
-        drawRequested = !drawRequested;
-
     }
 
     public void AI(View v){
