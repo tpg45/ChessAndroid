@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Integer[] choice = legalMoves.get((int)(Math.random()*legalMoves.size()));
+        undoBoard = copyBoard(board);
         move(board[choice[1]][choice[0]], board[choice[3]][choice[2]]);
 
         printBoard();
