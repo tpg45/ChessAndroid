@@ -51,7 +51,7 @@ public class King extends Piece{
 			char enemyColor = color=='w' ? 'b':'w';
 			//King's side castle
 			if(x>this.x){
-				if(hasMoved || MainActivity.board[y][7].color==color || !(MainActivity.board[y][7] instanceof Rook))
+				if(hasMoved || MainActivity.board[y][7].color!=color || !(MainActivity.board[y][7] instanceof Rook))
 					return false;
 				for(int i = this.x+1; i<7; ){
 					if(!MainActivity.board[y][i].isBlank() || MainActivity.threatened(x, y, enemyColor)){
@@ -65,7 +65,7 @@ public class King extends Piece{
 			}
 			//Queen's side castle
 			else{
-				if(hasMoved || MainActivity.board[y][0].color==color || !(MainActivity.board[y][0] instanceof Rook))
+				if(hasMoved || MainActivity.board[y][0].color!=color || !(MainActivity.board[y][0] instanceof Rook))
 					return false;
 				for(int i = 2; i<this.x-1; i++){
 					if(!MainActivity.board[y][i].isBlank() || MainActivity.threatened(x, y, enemyColor)){
