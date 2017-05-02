@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static int turnCounter = 0;
     public static String input;
-    public static ArrayList<Integer[]> replay;
+    public static ArrayList<Character[]> replay;
     String repName = "";
     boolean check;
     boolean checkmate;
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     int pX;
     int pY;
+    char pChoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +105,15 @@ public class MainActivity extends AppCompatActivity {
         Integer[] choice = legalMoves.get((int)(Math.random()*legalMoves.size()));
         undoBoard = copyBoard(board);
         move(board[choice[1]][choice[0]], board[choice[3]][choice[2]], true);
-        replay.add(choice);
+        if(pChoice=='\0'){
+            Character[] choice2 = {(char)(choice[0]+48), (char)(choice[1]+48), (char)(choice[2]+48), (char)(choice[3]+48)};
+            replay.add(choice2);
+        }
+        else{
+            Character[] choice2 = {(char)(choice[0]+48), (char)(choice[1]+48), (char)(choice[2]+48), (char)(choice[3]+48), pChoice};
+            replay.add(choice2);
+        }
+
         if(!isDrawRequestedThisTurn)
             drawRequested=false;
         isDrawRequestedThisTurn=false;
@@ -239,22 +248,30 @@ public class MainActivity extends AppCompatActivity {
                 switch(choice){
                     case "queen":{
                         board[pY][pX] = new Queen(pX, pY, color, true);
+                        pChoice='q';
                         break;
                     }
                     case "knight":{
                         board[pY][pX] = new Knight(pX, pY, color, true);
+                        pChoice='k';
                         break;
                     }
                     case "rook":{
                         board[pY][pX] = new Rook(pX, pY, color, true);
+                        pChoice='r';
                         break;
                     }
                     case "bishop":{
                         board[pY][pX] = new Bishop(pX, pY, color, true);
+                        pChoice='b';
                     }
                 }
                 printBoard();
             }
+            Character[] a = replay.get(replay.size()-1);
+            replay.remove(replay.size()-1);
+            Character [] a2 = {a[0],a[1],a[2],a[3],pChoice};
+            replay.add(a2);
         }
     }
 
@@ -649,8 +666,10 @@ public class MainActivity extends AppCompatActivity {
         }
         board[p1.y][p1.x] = (p1.x)%2==(p1.y)%2? new Piece(p1.x,p1.y,'b', false):new Piece(p1.x,p1.y,'w', false);
         turnCounter++;
-        if(isReal)
+        if(isReal){
+            pChoice='\0';
             isDrawRequestedThisTurn=false;
+        }
     }
 
     /**
@@ -664,7 +683,7 @@ public class MainActivity extends AppCompatActivity {
         drawRequested = false;
         isDrawRequestedThisTurn=false;
         turnCounter = 0;
-        replay = new ArrayList<Integer[]>();
+        replay = new ArrayList<Character[]>();
 
         targeting=false;
 
@@ -675,6 +694,7 @@ public class MainActivity extends AppCompatActivity {
 
         pX=0;
         pY=0;
+        pChoice='\0';
 
         gridview = (GridView)findViewById(R.id.gridview);
 
@@ -754,8 +774,15 @@ public class MainActivity extends AppCompatActivity {
                             board=temp;
                             turnCounter--;
                             move(board[sourceY][sourceX], board[targetY][targetX], true);
-                            Integer[] arr = {sourceX,sourceY,targetX,targetY};
-                            replay.add(arr);
+                            if(pChoice=='\0'){
+                                Character[] arr = {(char)(sourceX+48), (char)(sourceY+48), (char)(targetX+48), (char)(targetY+48)};
+                                replay.add(arr);
+                            }
+                            else{
+                                Character[] arr = {(char)(sourceX+48), (char)(sourceY+48), (char)(targetX+48), (char)(targetY+48), pChoice};
+                                replay.add(arr);
+                            }
+
                             printBoard();
                             check = isCheck(currentPlayer);
                             checkmate = isCheckmate(currentPlayer);

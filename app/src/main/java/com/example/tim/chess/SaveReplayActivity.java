@@ -30,9 +30,11 @@ public class SaveReplayActivity extends AppCompatActivity {
         String str = name.getText().toString();
         String d = "";
         if(str!=null && !str.equals("")){
-            ArrayList<Integer[]> replay = (ArrayList<Integer[]>) getIntent().getSerializableExtra("replay");
-            for(Integer[] a: replay){
+            ArrayList<Character[]> replay = (ArrayList<Character[]>) getIntent().getSerializableExtra("replay");
+            for(Character[] a: replay){
                 d+=(a[0]+"")+(a[1]+"")+(a[2]+"")+(a[3]+"");
+                if(a.length==5)
+                    d+=(a[4]+"");
             }
             File f = new File(getFilesDir(), str+".rep");
             PrintWriter writer = null;
