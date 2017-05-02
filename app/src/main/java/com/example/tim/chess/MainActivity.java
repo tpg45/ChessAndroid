@@ -71,39 +71,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        try {
-            File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator+"tempboard");
-            if(f.exists()){
-                FileInputStream fis = new FileInputStream(f);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                board = (Piece[][])ois.readObject();
-                ois.close();
-                fis.close();
-                String choice = getIntent().getStringExtra("choice");
-                //String choice = data.getStringExtra("choice");
-                char color = (pY==7)?'w':'b';
-                switch(choice){
-                    case "queen":{
-                        board[pY][pX] = new Queen(pY, pX, color, true);
-                    }
-                    case "knight":{
-                        board[pY][pX] = new Knight(pY, pX, color, true);
-                    }
-                    case "rook":{
-                        board[pY][pX] = new Rook(pY, pX, color, true);
-                    }
-                    case "bishop":{
-                        board[pY][pX] = new Bishop(pY, pX, color, true);
-                    }
+        Bundle b = getIntent().getBundleExtra("b");
+        if(b!=null){
+            board=(Piece[][])b.getSerializable("board");
+            String choice = getIntent().getStringExtra("choice");
+            char color = (pY==7)?'w':'b';
+            switch(choice){
+                case "queen":{
+                    board[pY][pX] = new Queen(pY, pX, color, true);
+                    break;
                 }
-                printBoard();
+                case "knight":{
+                    board[pY][pX] = new Knight(pY, pX, color, true);
+                    break;
+                }
+                case "rook":{
+                    board[pY][pX] = new Rook(pY, pX, color, true);
+                    break;
+                }
+                case "bishop":{
+                    board[pY][pX] = new Bishop(pY, pX, color, true);
+                    break;
+                }
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            printBoard();
         }
     }
 
@@ -221,26 +212,11 @@ public class MainActivity extends AppCompatActivity {
         pX = p.x;
         pY = p.y;
 
-        FileOutputStream fos= null;
-        try {
-            File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator+"tempboard");
-            f.createNewFile();
-            fos = new FileOutputStream(f);
-            ObjectOutputStream oos= new ObjectOutputStream(fos);
-            oos.writeObject(board);
-            oos.flush();
-            oos.close();
-            fos.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
+        Bundle b = new Bundle();
+        b.putSerializable("board", board);
         Intent intent = new Intent(this, PromoteActivity.class);
         intent.putExtra("color", p.color+"");
+        intent.putExtra("b", b);
         startActivityForResult(intent, 2);
     }
 
@@ -248,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==1) {
             if(resultCode==RESULT_OK) {
-                repName = data.getStringExtra("repname");
+                /*repName = data.getStringExtra("repname");
                 try{
                     File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator+repName);
                     FileOutputStream fos= new FileOutputStream(f);
@@ -260,25 +236,12 @@ public class MainActivity extends AppCompatActivity {
                     fos.close();
                 }catch(IOException ioe){
                     ioe.printStackTrace();
-                }
+                }*/
             }
         }
         else if(requestCode==2){
             if(resultCode==RESULT_OK){
-                try {
-                    File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator+"tempboard");
-                    FileInputStream fis = new FileInputStream(f);
-                    ObjectInputStream ois = new ObjectInputStream(fis);
-                    board = (Piece[][])ois.readObject();
-                    ois.close();
-                    fis.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                board=(Piece[][])data.getBundleExtra("b").getSerializable("board");
 
                 String choice = data.getStringExtra("choice");
                 char color = (pY==7)?'w':'b';

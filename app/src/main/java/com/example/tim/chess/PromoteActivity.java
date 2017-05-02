@@ -30,6 +30,7 @@ public class PromoteActivity extends AppCompatActivity {
     public void queen(View v){
         Intent intent = new Intent();
         intent.putExtra("choice", "queen");
+        intent.putExtra("b", getIntent().getExtras().getBundle("b"));
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -37,6 +38,7 @@ public class PromoteActivity extends AppCompatActivity {
     public void knight(View v){
         Intent intent = new Intent();
         intent.putExtra("choice", "knight");
+        intent.putExtra("b", getIntent().getExtras().getBundle("b"));
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -44,6 +46,7 @@ public class PromoteActivity extends AppCompatActivity {
     public void rook(View v){
         Intent intent = new Intent();
         intent.putExtra("choice", "rook");
+        intent.putExtra("b", getIntent().getExtras().getBundle("b"));
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -51,6 +54,7 @@ public class PromoteActivity extends AppCompatActivity {
     public void bishop(View v){
         Intent intent = new Intent();
         intent.putExtra("choice", "bishop");
+        intent.putExtra("b", getIntent().getExtras().getBundle("b"));
         setResult(RESULT_OK, intent);
         finish();
     }
