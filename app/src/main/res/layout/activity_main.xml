@@ -94,4 +94,17 @@
         android:horizontalSpacing="0dp"
         android:verticalSpacing="0.5dp"
         android:numColumns="8" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="141dp"
+        android:layout_height="56dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="455dp"
+        tools:layout_editor_absoluteX="121dp"
+        app:layout_constraintHorizontal_bias="0.502"
+        android:layout_marginBottom="0dp" />
 </android.support.constraint.ConstraintLayout>

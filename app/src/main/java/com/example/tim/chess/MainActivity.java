@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void resign(View v){
-        //update text field
+        //()findViewById(R.id.textView2);
         endGame();
     }
 
