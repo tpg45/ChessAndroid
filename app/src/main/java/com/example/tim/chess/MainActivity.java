@@ -4,20 +4,16 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -151,7 +147,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void resign(View v){
-        //()findViewById(R.id.textView2);
+        TextView textView = (TextView) findViewById(R.id.textView2);
+        String c;
+        String c2;
+        if (currentPlayer) {
+            c = "White";
+            c2 = "black";
+        }
+        else {
+            c = "Black";
+            c2 = "white";
+        }
+
+        textView.setText(c +" resigned, " + c2 +" wins");
         endGame();
     }
 
@@ -175,6 +183,17 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
     }
+
+    public void draw(View v){
+        if (drawRequested){
+            TextView textView = (TextView) findViewById(R.id.textView2);
+            textView.setText("draw");
+            endGame();
+            return;
+        }
+        else drawRequested = !drawRequested;
+    }
+
 
     public void undo(View v){
         if(turnCounter == 0){
