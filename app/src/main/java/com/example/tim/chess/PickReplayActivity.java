@@ -31,6 +31,15 @@ public class PickReplayActivity extends AppCompatActivity {
         }
     }
 
+    public String getExtension(String s){
+        String extension = "";
+        int i = s.lastIndexOf('.');
+        if (i > 0) {
+            extension = s.substring(i+1);
+        }
+        return extension;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +51,8 @@ public class PickReplayActivity extends AppCompatActivity {
         File folder = new File(getFilesDir().getAbsolutePath());
         File[] listOfFiles = folder.listFiles();
         for(File f: listOfFiles){
-            arr.add(new FileWrapper(f));
+            if(getExtension(f.getName()).equals("rep"))
+                arr.add(new FileWrapper(f));
         }
         arr.sort((FileWrapper f1, FileWrapper f2)->f1.f.getName().compareTo(f2.f.getName()));
         ListView lv = (ListView)findViewById(R.id.listview);
