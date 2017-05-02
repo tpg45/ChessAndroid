@@ -171,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             drawRequested = true;
+            TextView textView = (TextView) findViewById(R.id.textView2);
+            textView.setText("draw requested");
             isDrawRequestedThisTurn=true;
         }
     }
