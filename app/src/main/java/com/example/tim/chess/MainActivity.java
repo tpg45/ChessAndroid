@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
+        System.out.println("asd");
         initBoard();
     }
 
@@ -78,19 +79,19 @@ public class MainActivity extends AppCompatActivity {
             char color = (pY==7)?'w':'b';
             switch(choice){
                 case "queen":{
-                    board[pY][pX] = new Queen(pY, pX, color, true);
+                    board[pY][pX] = new Queen(pX, pY, color, true);
                     break;
                 }
                 case "knight":{
-                    board[pY][pX] = new Knight(pY, pX, color, true);
+                    board[pY][pX] = new Knight(pX, pY, color, true);
                     break;
                 }
                 case "rook":{
-                    board[pY][pX] = new Rook(pY, pX, color, true);
+                    board[pY][pX] = new Rook(pX, pY, color, true);
                     break;
                 }
                 case "bishop":{
-                    board[pY][pX] = new Bishop(pY, pX, color, true);
+                    board[pY][pX] = new Bishop(pX, pY, color, true);
                     break;
                 }
             }
@@ -238,19 +239,19 @@ public class MainActivity extends AppCompatActivity {
                 char color = (pY==7)?'w':'b';
                 switch(choice){
                     case "queen":{
-                        board[pY][pX] = new Queen(pY, pX, color, true);
+                        board[pY][pX] = new Queen(pX, pY, color, true);
                         break;
                     }
                     case "knight":{
-                        board[pY][pX] = new Knight(pY, pX, color, true);
+                        board[pY][pX] = new Knight(pX, pY, color, true);
                         break;
                     }
                     case "rook":{
-                        board[pY][pX] = new Rook(pY, pX, color, true);
+                        board[pY][pX] = new Rook(pX, pY, color, true);
                         break;
                     }
                     case "bishop":{
-                        board[pY][pX] = new Bishop(pY, pX, color, true);
+                        board[pY][pX] = new Bishop(pX, pY, color, true);
                     }
                 }
                 printBoard();
