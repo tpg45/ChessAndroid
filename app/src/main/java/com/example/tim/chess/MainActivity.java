@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -51,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (!isTaskRoot()){
+            finish();
+            return;
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -65,6 +71,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        try {
+            File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator+"tempboard");
+            if(f.exists()){
+                FileInputStream fis = new FileInputStream(f);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                board = (Piece[][])ois.readObject();
+                ois.close();
+                fis.close();
+                String choice = getIntent().getStringExtra("choice");
+                //String choice = data.getStringExtra("choice");
+                char color = (pY==7)?'w':'b';
+                switch(choice){
+                    case "queen":{
+                        board[pY][pX] = new Queen(pY, pX, color, true);
+                    }
+                    case "knight":{
+                        board[pY][pX] = new Knight(pY, pX, color, true);
+                    }
+                    case "rook":{
+                        board[pY][pX] = new Rook(pY, pX, color, true);
+                    }
+                    case "bishop":{
+                        board[pY][pX] = new Bishop(pY, pX, color, true);
+                    }
+                }
+                printBoard();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void draw(View v){
@@ -183,7 +223,9 @@ public class MainActivity extends AppCompatActivity {
 
         FileOutputStream fos= null;
         try {
-            fos = new FileOutputStream("tempboard");
+            File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator+"tempboard");
+            f.createNewFile();
+            fos = new FileOutputStream(f);
             ObjectOutputStream oos= new ObjectOutputStream(fos);
             oos.writeObject(board);
             oos.close();
@@ -206,7 +248,8 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode==RESULT_OK) {
                 repName = data.getStringExtra("repname");
                 try{
-                    FileOutputStream fos= new FileOutputStream(repName);
+                    File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator+repName);
+                    FileOutputStream fos= new FileOutputStream(f);
                     ObjectOutputStream oos= new ObjectOutputStream(fos);
                     oos.writeObject(replay);
                     oos.close();
@@ -219,7 +262,8 @@ public class MainActivity extends AppCompatActivity {
         else if(requestCode==2){
             if(resultCode==RESULT_OK){
                 try {
-                    FileInputStream fis = new FileInputStream("tempboard");
+                    File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator+"tempboard");
+                    FileInputStream fis = new FileInputStream(f);
                     ObjectInputStream ois = new ObjectInputStream(fis);
                     board = (Piece[][])ois.readObject();
                     ois.close();
@@ -248,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
                         board[pY][pX] = new Bishop(pY, pX, color, true);
                     }
                 }
+                printBoard();
             }
         }
     }
