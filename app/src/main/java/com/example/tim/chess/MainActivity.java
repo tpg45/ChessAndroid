@@ -11,9 +11,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -220,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("color", p.color+"");
         intent.putExtra("b", b);
         startActivityForResult(intent, 2);
+
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -254,6 +252,35 @@ public class MainActivity extends AppCompatActivity {
                         board[pY][pX] = new Bishop(pX, pY, color, true);
                         pChoice='b';
                     }
+                }
+                check = isCheck(currentPlayer);
+                TextView textView = (TextView) findViewById(R.id.textView2);
+                if(check) {
+                    textView.setText("Check");
+                }
+                else{
+                    textView.setText("");
+                }
+                checkmate = isCheckmate(currentPlayer);
+                if (checkmate) {
+                    String player;
+                    if (currentPlayer)
+                        player = "Black";
+                    else
+                        player = "White";
+                    textView.setText(player + " wins");
+                }
+                stalemate = isStalemate(currentPlayer);
+                if(stalemate) {
+                    //textView.setText("stalemate");
+                }
+                if (checkmate || stalemate) {
+                    gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                        }
+                    });
+                    endGame();
+                    return;
                 }
                 printBoard();
             }
