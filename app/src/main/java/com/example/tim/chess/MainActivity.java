@@ -118,6 +118,13 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 }
             });
+            TextView textView = (TextView)findViewById(R.id.textView2);
+            String player;
+            if (currentPlayer)
+                player = "White";
+            else
+                player = "Black";
+            textView.setText(player + " wins");
             endGame();
         }
     }
@@ -756,7 +763,7 @@ public class MainActivity extends AppCompatActivity {
                             board=temp;
                             turnCounter--;
                             move(board[sourceY][sourceX], board[targetY][targetX], true);
-                            Integer[] arr = {sourceY,sourceX,targetX,targetY};
+                            Integer[] arr = {sourceX,sourceY,targetX,targetY};
                             replay.add(arr);
                             printBoard();
                             check = isCheck(currentPlayer);
@@ -770,6 +777,12 @@ public class MainActivity extends AppCompatActivity {
                                     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                                     }
                                 });
+                                TextView textView = (TextView)findViewById(R.id.textView2);
+                                String player = "";
+                                if (currentPlayer)
+                                    player = "White";
+                                else player = "Black";
+                                textView.setText(player + " wins");
                                 endGame();
                             }
                         }
