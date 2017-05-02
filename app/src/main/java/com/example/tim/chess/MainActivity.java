@@ -60,43 +60,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        initBoard();
     }
 
     @Override
     protected void onStart(){
         super.onStart();
-        System.out.println("asd");
-        initBoard();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Bundle b = getIntent().getBundleExtra("b");
-        if(b!=null){
-            board=(Piece[][])b.getSerializable("board");
-            String choice = getIntent().getStringExtra("choice");
-            char color = (pY==7)?'w':'b';
-            switch(choice){
-                case "queen":{
-                    board[pY][pX] = new Queen(pX, pY, color, true);
-                    break;
-                }
-                case "knight":{
-                    board[pY][pX] = new Knight(pX, pY, color, true);
-                    break;
-                }
-                case "rook":{
-                    board[pY][pX] = new Rook(pX, pY, color, true);
-                    break;
-                }
-                case "bishop":{
-                    board[pY][pX] = new Bishop(pX, pY, color, true);
-                    break;
-                }
-            }
-            printBoard();
-        }
     }
 
     public void AI(View v){
@@ -118,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 for(int j=0; j<8; j++){
                     if(p.canMove(i, j)){
                         Piece[][] tempBoard = copyBoard(board);
-                        move(p, board[j][i]);
+                        move(p, board[j][i], false);
                         if(!isCheck(!currentPlayer)){
                             Integer[] temp = {p.x, p.y, i, j};
                             legalMoves.add(temp);
@@ -132,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         Integer[] choice = legalMoves.get((int)(Math.random()*legalMoves.size()));
         undoBoard = copyBoard(board);
-        move(board[choice[1]][choice[0]], board[choice[3]][choice[2]]);
+        move(board[choice[1]][choice[0]], board[choice[3]][choice[2]], true);
         replay.add(choice);
         drawRequested=false;
 
@@ -316,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if(test.color==color && test.canMove(x, y)){
                     Piece[][] temp = copyBoard(board);
-                    move(test, board[y][x]);
+                    move(test, board[y][x], false);
                     boolean b = color!='w';
                     if(isCheck(b)){
                         board = temp;
@@ -585,7 +559,7 @@ public class MainActivity extends AppCompatActivity {
                         Piece test = board[i][j];
                         if(p.canMove(test.x, test.y)){
                             Piece[][] temp = copyBoard(board);
-                            move(p, test);
+                            move(p, test, false);
                             if(!isCheck(p.color!='w')){
                                 board=temp;
                                 turnCounter--;
@@ -606,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
      * @param p1 - Piece to be moved.
      * @param p2 - Piece being moved to.
      */
-    public void move(Piece p1, Piece p2){
+    public void move(Piece p1, Piece p2, boolean isReal){
         if(p1 instanceof Pawn){
             boolean isEnPassant = ((Pawn) p1).isLegalEnPassant(p2.x, p2.y);
             int oldY = p1.y;
@@ -617,8 +591,13 @@ public class MainActivity extends AppCompatActivity {
                 char color = oldY%2 == p2.x%2 ? 'b':'w';
                 board[oldY][p2.x] = new Piece(oldY, p2.x, color, false);
             }
-            if ((p1.color == 'w' && p2.y == 7) || (p1.color == 'b' && p2.y == 0))
-                promote(board[p2.y][p2.x]);
+            if ((p1.color == 'w' && p2.y == 7) || (p1.color == 'b' && p2.y == 0)){
+                board[p1.y][p1.x] = (p1.x)%2==(p1.y)%2? new Piece(p1.x,p1.y,'b', false):new Piece(p1.x,p1.y,'w', false);
+                turnCounter++;
+                if(isReal)
+                    promote(board[p2.y][p2.x]);
+                return;
+            }
         }
         else if(p1 instanceof Rook)
             board[p2.y][p2.x] = new Rook(p2.x, p2.y, p1.color, true);
@@ -633,10 +612,10 @@ public class MainActivity extends AppCompatActivity {
             if(castle){
                 boolean queenSide = p2.x<p1.x;
                 if(queenSide){
-                    move(board[p1.y][0], board[p1.y][p1.x-1]);
+                    move(board[p1.y][0], board[p1.y][p1.x-1], true);
                 }
                 else{
-                    move(board[p1.y][7], board[p1.y][p1.x+1]);
+                    move(board[p1.y][7], board[p1.y][p1.x+1], true);
                 }
             }
             board[p2.y][p2.x] = new King(p2.x, p2.y, p1.color, true);
@@ -734,7 +713,7 @@ public class MainActivity extends AppCompatActivity {
 
                         //move
                         undoBoard = copyBoard(board);
-                        move(board[sourceY][sourceX], board[targetY][targetX]);
+                        move(board[sourceY][sourceX], board[targetY][targetX], false);
 
                         if(isCheck(!currentPlayer)){
                             board=temp;
@@ -742,6 +721,9 @@ public class MainActivity extends AppCompatActivity {
                             printBoard();
                         }
                         else{
+                            board=temp;
+                            turnCounter--;
+                            move(board[sourceY][sourceX], board[targetY][targetX], true);
                             Integer[] arr = {sourceY,sourceX,targetX,targetY};
                             replay.add(arr);
                             printBoard();
