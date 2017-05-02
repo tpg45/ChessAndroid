@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     boolean stalemate;
     boolean currentPlayer;  //true=white
     boolean drawRequested;
+    boolean isDrawRequestedThisTurn;
 
     boolean targeting;
 
@@ -104,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
         undoBoard = copyBoard(board);
         move(board[choice[1]][choice[0]], board[choice[3]][choice[2]], true);
         replay.add(choice);
-        drawRequested=false;
+        if(!isDrawRequestedThisTurn)
+            drawRequested=false;
 
         printBoard();
         check = isCheck(currentPlayer);
@@ -159,15 +161,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void draw(View v){
-        if (drawRequested){
+        if(isDrawRequestedThisTurn)
+            return;
+        else if (drawRequested){
             TextView textView = (TextView) findViewById(R.id.textView2);
             textView.setText("draw");
             endGame();
             return;
         }
-        else drawRequested = !drawRequested;
+        else{
+            drawRequested = true;
+            isDrawRequestedThisTurn=true;
+        }
     }
-
 
     public void undo(View v){
         if(turnCounter == 0){
@@ -613,8 +619,10 @@ public class MainActivity extends AppCompatActivity {
             if ((p1.color == 'w' && p2.y == 7) || (p1.color == 'b' && p2.y == 0)){
                 board[p1.y][p1.x] = (p1.x)%2==(p1.y)%2? new Piece(p1.x,p1.y,'b', false):new Piece(p1.x,p1.y,'w', false);
                 turnCounter++;
-                if(isReal)
+                if(isReal){
+                    isDrawRequestedThisTurn=false;
                     promote(board[p2.y][p2.x]);
+                }
                 return;
             }
         }
@@ -641,6 +649,8 @@ public class MainActivity extends AppCompatActivity {
         }
         board[p1.y][p1.x] = (p1.x)%2==(p1.y)%2? new Piece(p1.x,p1.y,'b', false):new Piece(p1.x,p1.y,'w', false);
         turnCounter++;
+        if(isReal)
+            isDrawRequestedThisTurn=false;
     }
 
     /**
@@ -652,6 +662,7 @@ public class MainActivity extends AppCompatActivity {
         stalemate = false;
         currentPlayer = true;   //white
         drawRequested = false;
+        isDrawRequestedThisTurn=false;
         turnCounter = 0;
         replay = new ArrayList<Integer[]>();
 
@@ -750,7 +761,8 @@ public class MainActivity extends AppCompatActivity {
                             checkmate = isCheckmate(currentPlayer);
                             stalemate = isStalemate(currentPlayer);
                             currentPlayer = !currentPlayer;
-                            drawRequested=false;
+                            if(!isDrawRequestedThisTurn)
+                                drawRequested=false;
                             if (checkmate || stalemate) {
                                 gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
