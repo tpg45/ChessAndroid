@@ -6,6 +6,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
+import static android.R.attr.data;
+
 public class SaveReplayActivity extends AppCompatActivity {
 
     @Override
@@ -17,9 +28,31 @@ public class SaveReplayActivity extends AppCompatActivity {
     public void saveReplay(View v){
         EditText name = (EditText)findViewById(R.id.name);
         String str = name.getText().toString();
+        String d = "";
         if(str!=null && !str.equals("")){
+            ArrayList<Integer[]> replay = (ArrayList<Integer[]>) getIntent().getSerializableExtra("replay");
+            for(Integer[] a: replay){
+                d+=(a[0]+"")+(a[1]+"")+(a[2]+"")+(a[3]+"");
+            }
+            File f = new File(getFilesDir(), str+".rep");
+            PrintWriter writer = null;
+            try {
+                f.createNewFile();
+                writer = new PrintWriter(f.getAbsolutePath(), "UTF-8");
+                writer.print(d);
+                writer.flush();
+                writer.close();
+                String absolutePath = f.getAbsolutePath();
+                System.out.println(absolutePath);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             Intent intent = new Intent();
-            intent.putExtra("repname", str);
             setResult(RESULT_OK, intent);
             finish();
         }

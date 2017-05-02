@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         replay.add(choice);
         if(!isDrawRequestedThisTurn)
             drawRequested=false;
+        isDrawRequestedThisTurn=false;
 
         printBoard();
         check = isCheck(currentPlayer);
@@ -189,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void endGame(){
         Intent intent = new Intent(this, SaveReplayActivity.class);
+        intent.putExtra("replay", replay);
         startActivityForResult(intent, 1);
         initBoard();
     }
@@ -215,19 +217,6 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==1) {
             if(resultCode==RESULT_OK) {
-                /*repName = data.getStringExtra("repname");
-                try{
-                    File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator+repName);
-                    FileOutputStream fos= new FileOutputStream(f);
-                    ObjectOutputStream oos= new ObjectOutputStream(fos);
-                    oos.writeObject(replay);
-                    oos.flush();
-                    oos.close();
-                    fos.flush();
-                    fos.close();
-                }catch(IOException ioe){
-                    ioe.printStackTrace();
-                }*/
             }
         }
         else if(requestCode==2){
@@ -754,7 +743,7 @@ public class MainActivity extends AppCompatActivity {
                             board=temp;
                             turnCounter--;
                             move(board[sourceY][sourceX], board[targetY][targetX], true);
-                            Integer[] arr = {sourceY,sourceX,targetX,targetY};
+                            Integer[] arr = {sourceX,sourceY,targetX,targetY};
                             replay.add(arr);
                             printBoard();
                             check = isCheck(currentPlayer);
