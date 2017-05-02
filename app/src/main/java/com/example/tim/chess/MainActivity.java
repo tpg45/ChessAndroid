@@ -119,6 +119,13 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 }
             });
+            TextView textView = (TextView)findViewById(R.id.textView2);
+            String player;
+            if (currentPlayer)
+                player = "White";
+            else
+                player = "Black";
+            textView.setText(player + " wins");
             endGame();
         }
     }
@@ -172,6 +179,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             drawRequested = true;
+            TextView textView = (TextView) findViewById(R.id.textView2);
+            textView.setText("draw requested");
             isDrawRequestedThisTurn=true;
         }
     }
@@ -757,6 +766,12 @@ public class MainActivity extends AppCompatActivity {
                                     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                                     }
                                 });
+                                TextView textView = (TextView)findViewById(R.id.textView2);
+                                String player = "";
+                                if (currentPlayer)
+                                    player = "White";
+                                else player = "Black";
+                                textView.setText(player + " wins");
                                 endGame();
                             }
                         }
