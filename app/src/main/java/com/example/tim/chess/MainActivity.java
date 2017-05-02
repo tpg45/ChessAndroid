@@ -194,8 +194,19 @@ public class MainActivity extends AppCompatActivity {
                 else if(test instanceof King){
                     continue;
                 }
-                else if(test.color==color && test.canMove(x, y))
+                else if(test.color==color && test.canMove(x, y)){
+                    Piece[][] temp = copyBoard(board);
+                    move(test, board[y][x]);
+                    boolean b = color!='w';
+                    if(isCheck(b)){
+                        board = temp;
+                        turnCounter--;
+                        return false;
+                    }
+                    board=temp;
+                    turnCounter--;
                     return true;
+                }
             }
         }
         return false;
@@ -452,8 +463,17 @@ public class MainActivity extends AppCompatActivity {
                 for(int i=0; i<7; i++){
                     for(int j=0; j<7; j++){
                         Piece test = board[i][j];
-                        if(p.canMove(test.x, test.y))
-                            return false;
+                        if(p.canMove(test.x, test.y)){
+                            Piece[][] temp = copyBoard(board);
+                            move(p, test);
+                            if(!isCheck(p.color!='w')){
+                                board=temp;
+                                turnCounter--;
+                                return false;
+                            }
+                            board=temp;
+                            turnCounter--;
+                        }
                     }
                 }
             }
