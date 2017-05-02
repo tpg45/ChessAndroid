@@ -132,7 +132,7 @@ public class PlayReplayActivity extends AppCompatActivity {
         inputs=inputs.substring(4);
         char pChoice = '\0';
         Piece s = board[sY][sX];
-        if(Character.isAlphabetic(inputs.charAt(0))){
+        if(inputs.length()!=0 && Character.isAlphabetic(inputs.charAt(0))){
             pChoice=inputs.charAt(0);
             inputs=inputs.substring(1);
         }
