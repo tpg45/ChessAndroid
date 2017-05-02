@@ -45,14 +45,17 @@ public class Pawn extends Piece{
 	}
 	
 	/**
-	 * CHecks whether a move to (x,y) would be a legal double forward move
+	 * Checks whether a move to (x,y) would be a legal double forward move
 	 * @param x - column to move to
 	 * @param y - row to move to
 	 * @return whether a move to (x,y) would be a legal double forward move
 	 */
 	public boolean isLegalDoubleMove(int x, int y){
 		Piece target = MainActivity.board[y][x];
-		return this.x==x && !hasMoved && Math.abs(this.y-y)==2 && target.isBlank();
+		if (this.y<y)
+			return (this.x==x && !hasMoved && Math.abs(this.y-y)==2 && target.isBlank())&&(MainActivity.board[y-1][x].isBlank());
+		else
+			return (this.x==x && !hasMoved && Math.abs(this.y-y)==2 && target.isBlank())&&(MainActivity.board[y+1][x].isBlank());
 	}
 	
 	/**

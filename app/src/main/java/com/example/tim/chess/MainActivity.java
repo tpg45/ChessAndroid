@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
      *
      */
 
-    public static GridView gridview;
+    public GridView gridview;
     public static Piece[][] board = new Piece[8][8];
     public static Piece[][] undoBoard = new Piece[8][8];
 
@@ -131,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void resign(View v){
+        if (turnCounter == 0){
+            return;
+        }
         TextView textView = (TextView) findViewById(R.id.textView2);
         String c;
         String c2;
@@ -175,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
             TextView textView = (TextView) findViewById(R.id.textView2);
             textView.setText("draw");
             endGame();
-            return;
         }
         else{
             drawRequested = true;
