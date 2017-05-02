@@ -1,11 +1,13 @@
 package com.example.tim.chess;
 
+import java.io.Serializable;
+
 /**
  * Represents a blank piece
  * @author Nick Prezioso, Tim Gassaway
  *
  */
-public class Piece{
+public class Piece implements Serializable{
 	/**
 	 * Column number
 	 */
