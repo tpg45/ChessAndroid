@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
      *
      */
 
-    public static GridView gridview;
+    public GridView gridview;
     public static Piece[][] board = new Piece[8][8];
     public static Piece[][] undoBoard = new Piece[8][8];
 
@@ -35,8 +35,7 @@ public class MainActivity extends AppCompatActivity {
     boolean checkmate;
     boolean stalemate;
     boolean currentPlayer;  //true=white
-    boolean drawRequested;
-    boolean isDrawRequestedThisTurn;
+    int drawTimer;
 
     boolean targeting;
 
@@ -114,32 +113,44 @@ public class MainActivity extends AppCompatActivity {
             replay.add(choice2);
         }
 
-        if(!isDrawRequestedThisTurn)
-            drawRequested=false;
-        isDrawRequestedThisTurn=false;
+
 
         printBoard();
         check = isCheck(currentPlayer);
+        TextView textView = (TextView) findViewById(R.id.textView2);
+        if(check) {
+            textView.setText("Check");
+        }
+        else {
+            textView.setText("");
+        }
         checkmate = isCheckmate(currentPlayer);
+        if (checkmate) {
+            String player;
+            if (currentPlayer)
+                player = "Black";
+            else
+                player = "White";
+            textView.setText(player + " wins");
+            }
         stalemate = isStalemate(currentPlayer);
+        if(stalemate) {
+            //textView.setText("stalemate");
+        }
         currentPlayer = !currentPlayer;
         if (checkmate || stalemate) {
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 }
             });
-            TextView textView = (TextView)findViewById(R.id.textView2);
-            String player;
-            if (currentPlayer)
-                player = "White";
-            else
-                player = "Black";
-            textView.setText(player + " wins");
             endGame();
         }
     }
 
     public void resign(View v){
+        if (turnCounter == 0){
+            return;
+        }
         TextView textView = (TextView) findViewById(R.id.textView2);
         String c;
         String c2;
@@ -162,19 +173,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void draw(View v){
-        if(isDrawRequestedThisTurn)
-            return;
-        else if (drawRequested){
+        if (turnCounter == drawTimer+1){
             TextView textView = (TextView) findViewById(R.id.textView2);
             textView.setText("draw");
             endGame();
-            return;
         }
         else{
-            drawRequested = true;
+            drawTimer = turnCounter;
             TextView textView = (TextView) findViewById(R.id.textView2);
             textView.setText("draw requested");
-            isDrawRequestedThisTurn=true;
         }
     }
 
@@ -619,7 +626,6 @@ public class MainActivity extends AppCompatActivity {
                 board[p1.y][p1.x] = (p1.x)%2==(p1.y)%2? new Piece(p1.x,p1.y,'b', false):new Piece(p1.x,p1.y,'w', false);
                 turnCounter++;
                 if(isReal){
-                    isDrawRequestedThisTurn=false;
                     promote(board[p2.y][p2.x]);
                 }
                 return;
@@ -650,7 +656,6 @@ public class MainActivity extends AppCompatActivity {
         turnCounter++;
         if(isReal){
             pChoice='\0';
-            isDrawRequestedThisTurn=false;
         }
     }
 
@@ -662,8 +667,7 @@ public class MainActivity extends AppCompatActivity {
         checkmate = false;
         stalemate = false;
         currentPlayer = true;   //white
-        drawRequested = false;
-        isDrawRequestedThisTurn=false;
+        drawTimer = 0;
         turnCounter = 0;
         replay = new ArrayList<Character[]>();
 
@@ -767,22 +771,32 @@ public class MainActivity extends AppCompatActivity {
 
                             printBoard();
                             check = isCheck(currentPlayer);
+                            TextView textView = (TextView) findViewById(R.id.textView2);
+                            if(check) {
+                                textView.setText("Check");
+                            }
+                            else{
+                                textView.setText("");
+                            }
                             checkmate = isCheckmate(currentPlayer);
+                            if (checkmate) {
+                                String player;
+                                if (currentPlayer)
+                                    player = "Black";
+                                else
+                                    player = "White";
+                                textView.setText(player + " wins");
+                            }
                             stalemate = isStalemate(currentPlayer);
+                            if(stalemate) {
+                                //textView.setText("stalemate");
+                            }
                             currentPlayer = !currentPlayer;
-                            if(!isDrawRequestedThisTurn)
-                                drawRequested=false;
                             if (checkmate || stalemate) {
                                 gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                                     }
                                 });
-                                TextView textView = (TextView)findViewById(R.id.textView2);
-                                String player = "";
-                                if (currentPlayer)
-                                    player = "White";
-                                else player = "Black";
-                                textView.setText(player + " wins");
                                 endGame();
                             }
                         }
