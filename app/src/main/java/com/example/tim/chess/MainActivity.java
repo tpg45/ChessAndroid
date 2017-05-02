@@ -202,24 +202,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Checks to see if the input move is legal.
-     * <p>
-     * Calls canMove on the Piece object located at the position indicated.
-     * @param player - current player
-     * @return if move is legal, returns true.
-     */
-    public static boolean isLegal(boolean player){
-        if(input.equals("draw"))
-            return false;
-        Piece cur = board[input.charAt(1)-49][input.charAt(0)-97];
-        if((player && cur.color == 'b') || (!player && cur.color == 'w'))
-            return false;
-        if(cur.canMove(input.charAt(3)-97 , input.charAt(4)-49))
-            return true;
-        return false;
-    }
-
-    /**
      * Checks if a move by the player put the opponent in checkmate
      * @param player - the player who moved the piece in question
      * @return whether the player has put the opponent in checkmate
