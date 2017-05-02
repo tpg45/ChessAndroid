@@ -118,8 +118,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void undo(View v){
-        board = copyBoard(undoBoard);
-        printBoard();
+        if(board != undoBoard) {
+            turnCounter--;
+            currentPlayer = !currentPlayer;
+            board = undoBoard;
+            printBoard();
+        }
     }
 
     /**
