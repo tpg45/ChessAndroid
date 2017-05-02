@@ -69,30 +69,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         try {
-            File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator+"tempboard");
-            if(f.exists()){
+            File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "tempboard");
+            if (f.exists()) {
                 FileInputStream fis = new FileInputStream(f);
                 ObjectInputStream ois = new ObjectInputStream(fis);
-                board = (Piece[][])ois.readObject();
+                board = (Piece[][]) ois.readObject();
                 ois.close();
                 fis.close();
                 String choice = getIntent().getStringExtra("choice");
                 //String choice = data.getStringExtra("choice");
-                char color = (pY==7)?'w':'b';
-                switch(choice){
-                    case "queen":{
+                char color = (pY == 7) ? 'w' : 'b';
+                switch (choice) {
+                    case "queen": {
                         board[pY][pX] = new Queen(pY, pX, color, true);
                     }
-                    case "knight":{
+                    case "knight": {
                         board[pY][pX] = new Knight(pY, pX, color, true);
                     }
-                    case "rook":{
+                    case "rook": {
                         board[pY][pX] = new Rook(pY, pX, color, true);
                     }
-                    case "bishop":{
+                    case "bishop": {
                         board[pY][pX] = new Bishop(pY, pX, color, true);
                     }
                 }
@@ -105,15 +105,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    public void draw(View v){
-        if (drawRequested){
-            endGame();
-            return;
-        }
-        drawRequested = !drawRequested;
-
     }
 
     public void AI(View v){
@@ -281,12 +272,15 @@ public class MainActivity extends AppCompatActivity {
                 switch(choice){
                     case "queen":{
                         board[pY][pX] = new Queen(pY, pX, color, true);
+                        break;
                     }
                     case "knight":{
                         board[pY][pX] = new Knight(pY, pX, color, true);
+                        break;
                     }
                     case "rook":{
                         board[pY][pX] = new Rook(pY, pX, color, true);
+                        break;
                     }
                     case "bishop":{
                         board[pY][pX] = new Bishop(pY, pX, color, true);
