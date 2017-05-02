@@ -9,6 +9,11 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static int turnCounter = 0;
     public static String input;
-    public static ArrayList<Integer[]> replay = new ArrayList<Integer[]>();
+    public static ArrayList<Integer[]> replay;
+    String repName = "";
     boolean check;
     boolean checkmate;
     boolean stalemate;
@@ -119,7 +125,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void replay(View v){
+        //select replay
+        
 
+
+        try
+        {
+            FileInputStream fis = new FileInputStream(repName);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            replay = (ArrayList) ois.readObject();
+            ois.close();
+            fis.close();
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+            return;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
     }
 
     public void undo(View v){
@@ -135,7 +158,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void endGame(){
-        //serialize arraylist for replay if they save it
+        {
+            try{
+                FileOutputStream fos= new FileOutputStream(repName);
+                ObjectOutputStream oos= new ObjectOutputStream(fos);
+                oos.writeObject(replay);
+                oos.close();
+                fos.close();
+            }catch(IOException ioe){
+                ioe.printStackTrace();
+            }
+        }
         initBoard();
     }
 
@@ -560,6 +593,7 @@ public class MainActivity extends AppCompatActivity {
         currentPlayer = true;   //white
         drawRequested = false;
         turnCounter = 0;
+        replay = new ArrayList<Integer[]>();
 
         targeting=false;
 
