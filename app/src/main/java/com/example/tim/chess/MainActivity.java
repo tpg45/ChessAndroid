@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static int turnCounter = 0;
     public static String input;
-
+    public static ArrayList<Integer[]> replay = new ArrayList<Integer[]>();
     boolean check;
     boolean checkmate;
     boolean stalemate;
@@ -492,6 +492,7 @@ public class MainActivity extends AppCompatActivity {
         stalemate = false;
         currentPlayer = true;   //white
         drawRequested = false;
+        turnCounter = 0;
 
         targeting=false;
 
@@ -565,6 +566,8 @@ public class MainActivity extends AppCompatActivity {
                     else if(board[sourceY][sourceX].canMove(targetX, targetY)){
                         //move
                         move(board[sourceY][sourceX], board[targetY][targetX]);
+                        Integer[] arr = {sourceY,sourceX,targetX,targetY};
+                        replay.add(arr);
                         currentPlayer=!currentPlayer;
                         printBoard();
                         check = isCheck(!currentPlayer);
