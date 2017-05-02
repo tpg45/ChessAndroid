@@ -196,6 +196,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void endGame(){
         Intent intent = new Intent(this, SaveReplayActivity.class);
+        String result = "";
+        if(isCheckmate(currentPlayer)) {
+            result = currentPlayer ? "White wins" : "Black wins";
+        }
+        else{
+            TextView textView = (TextView)findViewById(R.id.textView2);
+            result = textView.getText().toString();
+        }
+        intent.putExtra("status", result);
         intent.putExtra("replay", replay);
         startActivityForResult(intent, 1);
         initBoard();
@@ -699,7 +708,7 @@ public class MainActivity extends AppCompatActivity {
         checkmate = false;
         stalemate = false;
         currentPlayer = true;   //white
-        drawTimer = 0;
+        drawTimer = -2;
         turnCounter = 0;
         replay = new ArrayList<Character[]>();
 

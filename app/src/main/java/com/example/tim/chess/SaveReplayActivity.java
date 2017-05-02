@@ -1,21 +1,18 @@
 package com.example.tim.chess;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
-import static android.R.attr.data;
 
 public class SaveReplayActivity extends AppCompatActivity {
 
@@ -23,6 +20,8 @@ public class SaveReplayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_replay);
+        TextView textView = (TextView)findViewById(R.id.resultdisplay);
+        textView.setText(getIntent().getStringExtra("status"));
     }
 
     public void saveReplay(View v){
