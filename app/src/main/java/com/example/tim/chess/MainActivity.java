@@ -2,7 +2,6 @@ package com.example.tim.chess;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -73,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void undo(View v){
-
+        board = copyBoard(undoBoard);
+        printBoard();
     }
 
     /**
@@ -568,9 +568,11 @@ public class MainActivity extends AppCompatActivity {
                         Piece[][] temp = copyBoard();
 
                         //move
+                        undoBoard = copyBoard(board);
                         move(board[sourceY][sourceX], board[targetY][targetX]);
                         Integer[] arr = {sourceY,sourceX,targetX,targetY};
                         replay.add(arr);
+
                         if(isCheck(!currentPlayer)){
                             board=temp;
                             turnCounter--;
