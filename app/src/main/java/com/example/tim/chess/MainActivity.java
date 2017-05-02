@@ -121,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
         if(check) {
             textView.setText("Check");
         }
+        else {
+            textView.setText("");
+        }
         checkmate = isCheckmate(currentPlayer);
         if (checkmate) {
             String player;
@@ -131,8 +134,9 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(player + " wins");
             }
         stalemate = isStalemate(currentPlayer);
-        if(stalemate)
-            textView.setText("stalemate");
+        if(stalemate) {
+            //textView.setText("stalemate");
+        }
         currentPlayer = !currentPlayer;
         if (checkmate || stalemate) {
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -787,6 +791,9 @@ public class MainActivity extends AppCompatActivity {
                             if(check) {
                                 textView.setText("Check");
                             }
+                            else{
+                                textView.setText("");
+                            }
                             checkmate = isCheckmate(currentPlayer);
                             if (checkmate) {
                                 String player;
@@ -797,8 +804,9 @@ public class MainActivity extends AppCompatActivity {
                                 textView.setText(player + " wins");
                             }
                             stalemate = isStalemate(currentPlayer);
-                            if(stalemate)
-                                textView.setText("stalemate");
+                            if(stalemate) {
+                                //textView.setText("stalemate");
+                            }
                             currentPlayer = !currentPlayer;
                             if (checkmate || stalemate) {
                                 gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
