@@ -43,6 +43,8 @@ public class King extends Piece{
 			return true;
 		}
 		else{
+			if(isChecked())
+				return false;
 			boolean castle = !hasMoved && (this.y==0 || this.y==7) && this.y==y && Math.abs(this.x-x)==2;
 			boolean notBlockedOrThreatened = true;
 			boolean rookNotMoved = false;
