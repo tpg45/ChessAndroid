@@ -27,6 +27,10 @@ public class PromoteActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
     public void queen(View v){
         Intent intent = new Intent();
         intent.putExtra("choice", "queen");
