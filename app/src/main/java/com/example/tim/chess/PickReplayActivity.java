@@ -44,6 +44,11 @@ public class PickReplayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_replay);
+
+        loadReplays();
+    }
+
+    public void loadReplays(){
         nameDesc=true;
         dateDesc=true;
         //populate listview
@@ -74,7 +79,16 @@ public class PickReplayActivity extends AppCompatActivity {
         Intent intent = new Intent(this, PlayReplayActivity.class);
         ListView lv = (ListView)findViewById(R.id.listview);
         intent.putExtra("replay", ((FileWrapper)lv.getItemAtPosition(pos)).f);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==1) {
+            if(resultCode==RESULT_OK) {
+                loadReplays();
+            }
+        }
     }
 
     public void nameSort(View v){
