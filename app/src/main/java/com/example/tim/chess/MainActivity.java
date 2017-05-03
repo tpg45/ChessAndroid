@@ -67,6 +67,11 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
     public void AI(View v){
         if(checkmate || stalemate)
             return;
